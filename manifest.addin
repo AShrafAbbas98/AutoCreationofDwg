@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Command">
+		<Name>AutoCreationofDwg</Name>
+		<Assembly>AutoCreationofDwg.dll</Assembly>
+		<FullClassName>AutoCreationofDwg.Register.Commands</FullClassName>
+		<Text>AutoCreationofDwg</Text>
+		<Description>This plugin AutoCreationofDwg</Description>
+		<AddInId>
+			AFE982C5-B11D-45F4-A316-7E7A53F200D3
+		</AddInId>
+		<VendorId>Ashraf</VendorId>
+		<VendorDescription>BIM Developer, ashrafabbasramadan@gmail.com</VendorDescription>
+	</AddIn>
+	</RevitAddIns>
