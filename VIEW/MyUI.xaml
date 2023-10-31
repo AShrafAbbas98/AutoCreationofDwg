@@ -4,8 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AutoCreationofDwg.VIEW"
-             mc:Ignorable="d" ResizeMode="NoResize" 
+             mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="250">
+
+
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="AquaBtn">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="Aqua"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Width" Value="120"/>
+        </Style>
+
+        <Style TargetType="Button" x:Key="RedBtn">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="Red"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Width" Value="80"/>
+        </Style>
+    </Window.Resources>
+    
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.1*"/>
@@ -31,12 +52,8 @@
         <StackPanel Grid.Row="1">
             <Button 
                     Content="Collect Data"
-                    Width="120"
-                    Height="30"
-                    Foreground="Black"
-                    Background="Red"
-                    FontSize="18"
-                    FontWeight="Bold"
+                    Style="{StaticResource AquaBtn}"
+ 
                     x:Name="CollectBtn" 
                 Margin="0 0 0 3" Click="CollectBtn_Click"
                     />
@@ -143,12 +160,7 @@
                 <Button 
                     VerticalAlignment="Center" HorizontalAlignment="Center"
                     Content="Refresh"
-                    Width="80"
-                    Height="25"
-                    Foreground="Black"
-                    Background="Red"
-                    FontSize="14"
-                    FontWeight="Bold"
+                    Style="{StaticResource RedBtn}"
                     x:Name="RefreshBtn" 
                 Margin="0 15 0 3" Click="RefreshBtn_Click"
                     />
@@ -198,12 +210,8 @@
 
             <Button 
                     Content="START MODELING"
-                    Width="180"
-                    Height="30"
-                    Foreground="Black"
-                    Background="Red"
-                    FontSize="18"
-                    FontWeight="Bold"
+                Style="{StaticResource AquaBtn}"
+
                     x:Name="GenerateBtn" 
                 Margin="0 5 0 5" Click="GenerateBtn_Click"
                     />

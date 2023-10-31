@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.DB;
+﻿using AutoCreationofDwg.Helper;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,12 @@ namespace AutoCreationofDwg.VIEW
         List<XYZ> ColumnsBaseCoord = new List<XYZ>();
         List<Line> ColumnsBaseCoordLine = new List<Line>();
 
+        MyExternalEventHandeler myHandeler;
+        ExternalEvent external;
+
+
+        //HelperDB helper = new HelperDB();
+
         #endregion
 
 
@@ -36,6 +43,10 @@ namespace AutoCreationofDwg.VIEW
         {
             InitializeComponent();
             Doc = doc;
+            HelperDB.Doc = doc;
+
+            myHandeler = new MyExternalEventHandeler();
+            external = ExternalEvent.Create(myHandeler);    
         }
 
         //Methods
@@ -100,7 +111,8 @@ namespace AutoCreationofDwg.VIEW
 
         private void RefreshBtn_Click(object sender, RoutedEventArgs e)
         {
-            columnsPolyLineList.Clear();
+            this.LayersBox.Items.Clear();
+            HelperDB.columnsPolyLineList.Clear();
 
             var DwgName = this.DWGsBox.SelectedItem.ToString();
 
@@ -119,8 +131,7 @@ namespace AutoCreationofDwg.VIEW
                     {
                         if (ele is PolyLine)
                         {
-                            columnsPolyLineList.Add((PolyLine)ele);
-
+                            HelperDB.columnsPolyLineList.Add((PolyLine)ele);
                             var layer = Doc.GetElement(ele.GraphicsStyleId) as GraphicsStyle;
 
                             string layerName = layer.GraphicsStyleCategory.Name;
@@ -143,77 +154,26 @@ namespace AutoCreationofDwg.VIEW
             //FrontEnd data
             // Get user selections
             var SelectedColumnTypeName = this.ColumnTypesBox.SelectedItem.ToString();
-            var SelectedColumnType = columnTypesList.Where(x => x.Name == SelectedColumnTypeName).FirstOrDefault();
+            HelperDB.SelectedColumnType = columnTypesList.Where(x => x.Name == SelectedColumnTypeName).FirstOrDefault();
 
-            var selectedLayerName = this.LayersBox.SelectedItem.ToString();
+            HelperDB.selectedLayerName = this.LayersBox.SelectedItem.ToString();
 
             var baseLevelName = this.BottomLevelBox.SelectedItem.ToString();
             var topLevelName = this.TopLevelBox.SelectedItem.ToString();
 
-            var baseLevel = levelsList.Where(x => x.Name == baseLevelName).FirstOrDefault();
-            var topLevel = levelsList.Where(x => x.Name == topLevelName).FirstOrDefault();
+            var topLevel = HelperDB.baseLevel = levelsList.Where(x => x.Name == baseLevelName).FirstOrDefault();
+            var baseLevel =HelperDB.topLevel = levelsList.Where(x => x.Name == topLevelName).FirstOrDefault();
 
             double height = Math.Abs(topLevel.Elevation - baseLevel.Elevation);
             //Backend Actions
             //Get Mid Points from PolyLine of selected layer
 
-            using (Transaction trans = new Transaction(Doc, "Create Columns"))
-            {
-                trans.Start();
 
-                try
-                {
-                    int count = 0;
-                    foreach (var poly in columnsPolyLineList)
-                    {
-                        var layer = Doc.GetElement(poly.GraphicsStyleId) as GraphicsStyle;
-
-                        string layerName = layer.GraphicsStyleCategory.Name;
-
-                        if (layerName == selectedLayerName)
-                        {
-                            var columnOutline = poly.GetOutline();
-                            XYZ maxPoint = columnOutline.MaximumPoint;
-                            XYZ minPoint = columnOutline.MinimumPoint;
-
-                            XYZ midPoint = GetMidPoint(maxPoint, minPoint);
-                            ColumnsBaseCoord.Add(midPoint);
-
-                            XYZ columnLineBasePoint = new XYZ(midPoint.X, midPoint.Y, baseLevel.Elevation);
-                            XYZ columnLineTopPoint = new XYZ(midPoint.X, midPoint.Y, topLevel.Elevation);
-
-                            Line columnLine = Line.CreateBound(columnLineBasePoint, columnLineTopPoint);
-                            ColumnsBaseCoordLine.Add(columnLine);
-                            count++;
-                            Doc.Create.NewFamilyInstance(columnLine, SelectedColumnType, baseLevel, Autodesk.Revit.DB.Structure.StructuralType.Column);
-                        }
-                    }
-
-                    this.noOfColumns_TextBlock.Text = count.ToString();
-                    trans.Commit();
-
-                }
-                catch (Exception)
-                {
-
-                    TaskDialog.Show("Error", "Error in creating Columns");
-                    trans.Dispose();
-                }
-            }
-        }
+            external.Raise();
 
 
+            this.noOfColumns_TextBlock.Text = HelperDB.noOfColumns_TextBlock.ToString();
 
-
-        private XYZ GetMidPoint(XYZ maxPoint, XYZ minPoint)
-        {
-            double x = (maxPoint.X + minPoint.X) / 2;
-            double y = (maxPoint.Y + minPoint.Y) / 2;
-            double z = (maxPoint.Z + minPoint.Z) / 2;
-
-            XYZ midPoint = new XYZ(x, y, z);
-
-            return midPoint;
         }
     }
 }

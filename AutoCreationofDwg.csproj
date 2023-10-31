@@ -56,7 +56,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\HelperDB.cs" />
+    <Compile Include="Helper\MyExternalEventHandeler.cs" />
     <Compile Include="Register\Commands.cs" />
+    <Compile Include="Register\RevitApp.cs" />
     <Compile Include="VIEW\MyUI.xaml.cs">
       <DependentUpon>MyUI.xaml</DependentUpon>
     </Compile>
@@ -73,7 +76,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\icons8-modeling-32.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)"."" "$(AppData)\Autodesk\Revit\Addins\2023\"</PostBuildEvent>
